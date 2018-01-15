@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<GridPane fx:id="gridPane" fx:controller="pis.hue2.client.GUIClient"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <!--styleClass="root"-->
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+
+    <Text id="welcome-text" text="ChatAnwendung"
+          GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+
+    <TextArea text="Eingehende Nachricht" fx:id="nachricht"
+            GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+
+    <TextArea text="Ausgehende Nachricht" fx:id="ausgehendeNachricht" GridPane.columnIndex="0"
+               GridPane.rowIndex="2"/>
+    <TextField text="Command" fx:id="command" GridPane.columnIndex="0"
+               GridPane.rowIndex="3"/>
+    <Button text="Senden" fx:id="senden" onAction="#senden" GridPane.columnIndex="0"
+            GridPane.rowIndex="4"/>
+    <ListView fx:id="clientNames"
+            GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+    <Button text = "starten" fx:id="starten" onAction="#start"
+            GridPane.columnIndex="0" GridPane.rowIndex="6"/>
+
+    <Button text = "stoppen" fx:id="stoppen" onAction="#stop"
+            GridPane.columnIndex="0" GridPane.rowIndex="7"/>
+
+</GridPane>
+
