@@ -76,6 +76,7 @@ public class Client implements Runnable {
     }
 
     private void closeResources() throws IOException {
+        sendClientList();
         if (inputStream != null)
             inputStream.close();
         if (outputStream != null) {
@@ -117,8 +118,7 @@ public class Client implements Runnable {
                                       if (body.length() != 0) body.deleteCharAt(body.length() - 1);
                                       ausgabeClient.wirteInTable(new Ereignis(now().toString(),
                                               clientName, nachricht.getCommand(), body.toString()));
-                                  }
-                                  else ausgabeClient.wirteInTable(new Ereignis(now().toString(),
+                                  } else ausgabeClient.wirteInTable(new Ereignis(now().toString(),
                                           clientName, nachricht.getCommand(), ""));
                               }
                           }
@@ -141,9 +141,8 @@ public class Client implements Runnable {
             closeConnection("disconnect", Arrays.asList("invalid_command"),
                     "Invalid command");
         } else {
-            TeilnehmerListe teilnehmerListe = TeilnehmerListe.getInstance();
             register(nachricht);
-            sendClientList(teilnehmerListe, nachricht);
+            sendClientList();
             outputStream.writeUTF("connect:ok\n");
             isRegistered = true;
         }
@@ -167,8 +166,7 @@ public class Client implements Runnable {
             if (!Pattern.compile("[^\\s]*").matcher(body.toString()).matches()) {
                 messages.append("invalid_message:\n");
                 outputStream.writeUTF(messages.toString());
-            }
-            else {
+            } else {
                 messages.append("message:");
                 messages.append(teilnehmer.getName());
                 if (nachricht.getMessages() != null && !nachricht.getMessages().isEmpty())
@@ -179,8 +177,8 @@ public class Client implements Runnable {
         }
     }
 
-    private void sendClientList(TeilnehmerListe teilnehmerListe,
-                                Nachricht nachricht) throws IOException {
+    private void sendClientList() throws IOException {
+        TeilnehmerListe teilnehmerListe = TeilnehmerListe.getInstance();
         StringBuilder messages = new StringBuilder();
         messages.append("namelist:");
         teilnehmerListe.getTeilnehmerList().forEach(e -> {
@@ -195,16 +193,13 @@ public class Client implements Runnable {
         TeilnehmerListe teilnehmerListe = TeilnehmerListe.getInstance();
         teilnehmerListe.getTeilnehmerList().forEach(e -> {
             try {
-                if (!e.getName().equals(teilnehmer.getName())) {
-                    e.getDataOutputStream().writeUTF(messages.toString());
-                }
+                e.getDataOutputStream().writeUTF(messages.toString());
             } catch (IOException ex) {
                 System.err.println("IOException while sending list of clients");
                 ex.printStackTrace();
             }
 
         });
-        outputStream.writeUTF(messages.toString());
     }
 
     private void register(Nachricht nachricht)
@@ -219,8 +214,7 @@ public class Client implements Runnable {
                 if (nachricht.getMessages().size() > 1)
                     throw new IllegalArgumentException("Soll keine : enthalten");
                 teilnehmer = new Teilnehmer(socket, nachricht.getMessages().get(0), Thread.currentThread(), outputStream);
-            }
-            else throw new RuntimeException("Client Name soll gegeben sein");
+            } else throw new RuntimeException("Client Name soll gegeben sein");
             if (!teilnehmerListe.einfugen(teilnehmer)) {
                 removeTeilnehmer = false;
                 closeConnection("refused", Arrays.asList("name_in_use"),
