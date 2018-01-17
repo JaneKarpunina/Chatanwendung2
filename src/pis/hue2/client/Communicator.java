@@ -65,7 +65,16 @@ public class Communicator implements Transceiver {
         } catch (IOException ex) {
             System.err.println("");
         }
-        ausgabe.refreshClientList(FXCollections.observableArrayList());
+        updateGUI();
+    }
+
+    private void updateGUI() {
+        Platform.runLater(new Runnable() {
+                              public void run() {
+                                  ausgabe.refreshClientList(FXCollections.observableArrayList());
+                              }
+                          }
+        );
         if (ausgabe != null) ausgabe.setStopped(true);
     }
 
