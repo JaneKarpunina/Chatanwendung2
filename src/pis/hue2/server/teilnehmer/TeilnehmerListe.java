@@ -45,7 +45,7 @@ public class TeilnehmerListe {
         return false;
     }
 
-    public List<Teilnehmer> getTeilnehmerList() {
+    public synchronized List<Teilnehmer> getTeilnehmerList() {
         return teilnehmerList;
     }
 }
